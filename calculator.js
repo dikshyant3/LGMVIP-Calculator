@@ -5,7 +5,7 @@ class Calculator {
         this.clear();
     }
 
-    clear() {;
+    clear() {
         this.currentOperand = '';
         this.previousOperand = '';
         this.operation = undefined;
@@ -41,11 +41,15 @@ class Calculator {
                 break;
             case '-':
                 computation = prev - current;
-                break
+                break;
             case '*':
                 computation = prev * current;
                 break;
             case '÷':
+                if (current === 0) {
+                    alert("Cannot divide by zero.");
+                    return;
+                }
                 computation = prev / current;
                 break;
             default:
@@ -60,10 +64,8 @@ class Calculator {
         const stringNumber = number.toString();
         const integerDigits = parseFloat(stringNumber.split('.')[0]);
         const decimalDigits = stringNumber.split('.')[1];
-        let integerDisplay;
-        if (isNaN(integerDigits)) {
-            integerDisplay = '';
-        } else {
+        let integerDisplay = '';
+        if (!isNaN(integerDigits)) {
             integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 });
         }
         if (decimalDigits != null) {
@@ -73,22 +75,17 @@ class Calculator {
         }
     }
 
-
-
     updateDisplay() {
-        this.currentOperandTextElement.innerText =
-            this.getDisplayNumber(this.currentOperand)
+        this.currentOperandTextElement.innerText = this.getDisplayNumber(this.currentOperand)
         if (this.operation != null) {
-            this.previousOperandTextElement.innerText =
-                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
+            this.previousOperandTextElement.innerText = `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
         } else {
-            this.previousOperandTextElement.innerText = ''
+            this.previousOperandTextElement.innerText = '';
         }
     }
 }
 
-
-
+// Get the buttons using data attributes
 const numberButtons = document.querySelectorAll('[data-number]');
 const operationButtons = document.querySelectorAll('[data-operation]');
 const equalsButton = document.querySelector('[data-equals]');
@@ -103,27 +100,29 @@ numberButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.appendNumber(button.innerText);
         calculator.updateDisplay();
-    })
-})
+    });
+});
 
 operationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.chooseOperation(button.innerText);
+    button.addEventListener('click', (event) => {
+        const operation = event.target.innerText; 
+        calculator.chooseOperation(operation);
         calculator.updateDisplay();
-    })
-})
+    });
+});
 
-equalsButton.addEventListener('click', button => {
+
+equalsButton.addEventListener('click', () => {
     calculator.compute();
     calculator.updateDisplay();
-})
+});
 
-allClearButton.addEventListener('click', button => {
+allClearButton.addEventListener('click', () => {
     calculator.clear();
     calculator.updateDisplay();
-})
+});
 
-deleteButton.addEventListener('click', button => {
+deleteButton.addEventListener('click', () => {
     calculator.delete();
     calculator.updateDisplay();
-})
+});
